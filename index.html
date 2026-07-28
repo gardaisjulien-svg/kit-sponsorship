@@ -1,29 +1,567 @@
-CB Cluboost — Kit Sponsoring
-Étape 1 / 4
-1 · Le club
-Nom du club
-Sport Ville
-Année de création Deux ou trois lignes sur le club (ambiance, valeurs, palmarès…)
-← Précédent Suivant →
-Clé API Anthropic (utilisée uniquement dans votre navigateur, jamais stockée)
-Nécessaire pour la rédaction IA. Créer une clé →
-DOSSIER DE SPONSORING
-Nom du club
-Sport · Ville · Fondé en —
-—
-Licenciés
-—
-Spectateurs / match
-—
-Abonnés réseaux
-—
-Événements / an
-Le club
-Complétez le formulaire, puis cliquez sur « Générer le dossier » pour une présentation rédigée automatiquement.
-Pourquoi nous sponsoriser
-—
-	•	
-Nos formules
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kit Sponsoring — Cluboost</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pitch: #16412F;
+  --pitch-deep: #0D2B1F;
+  --chalk: #F6F5EF;
+  --amber: #D9A13B;
+  --amber-deep: #B9822A;
+  --ink: #16201B;
+  --line: rgba(22,32,27,0.12);
+  --font-display: 'Anton', sans-serif;
+  --font-body: 'Work Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
 
-Contactez-nous —
-🖨 Exporter en PDF
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background: var(--chalk);
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height:100vh;
+}
+
+/* ===== Topbar ===== */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 18px 32px;
+  background: var(--pitch-deep);
+  color: var(--chalk);
+  border-bottom: 3px solid var(--amber);
+}
+.topbar__brand{display:flex; align-items:center; gap:12px;}
+.topbar__mark{
+  font-family: var(--font-display);
+  background: var(--amber);
+  color: var(--pitch-deep);
+  width:36px; height:36px; border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; letter-spacing:0.5px;
+}
+.topbar__name{font-size:18px; font-weight:600;}
+.topbar__name em{font-style:normal; color:#C9C4B4; font-weight:400;}
+.topbar__step{
+  font-family: var(--font-mono);
+  font-size:13px; color: var(--amber);
+  border:1px solid rgba(217,161,59,0.4);
+  padding:4px 12px; border-radius:20px;
+}
+
+/* ===== Layout ===== */
+.layout{
+  display:grid;
+  grid-template-columns: minmax(320px, 440px) 1fr;
+  gap:0;
+  min-height: calc(100vh - 68px);
+}
+.panel{padding: 32px;}
+.form-panel{
+  background: var(--chalk);
+  border-right: 1px solid var(--line);
+}
+.preview-panel{
+  background: #EDEAE0;
+  display:flex; flex-direction:column; align-items:center;
+  padding: 40px 32px;
+}
+
+/* ===== Form ===== */
+fieldset{border:none; padding:0; margin:0;}
+legend{
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--pitch);
+  padding-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+label{
+  display:block; font-size:13px; font-weight:600; color:#4A5750;
+  margin-bottom:14px;
+}
+input, textarea{
+  display:block; width:100%; margin-top:6px;
+  font-family: var(--font-body); font-size:15px;
+  padding:10px 12px;
+  border:1.5px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  color: var(--ink);
+}
+input:focus, textarea:focus{
+  outline:none; border-color: var(--pitch);
+}
+.row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.checkbox{
+  display:flex; align-items:center; gap:8px;
+  font-weight:500; color: var(--ink);
+}
+.checkbox input{width:auto; margin:0;}
+
+.tier-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:14px;}
+.tier{
+  border:1.5px solid var(--line); border-radius:10px; padding:12px;
+  background:#fff;
+}
+.tier h4{
+  margin:0 0 8px; font-family: var(--font-display); font-weight:400;
+  color: var(--amber-deep); font-size:16px; letter-spacing:0.5px;
+}
+
+.form-nav{display:flex; gap:10px; margin-top: 20px;}
+.btn{
+  font-family: var(--font-body); font-weight:700; font-size:14px;
+  padding:11px 18px; border-radius:8px; border:none; cursor:pointer;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+}
+.btn:active{transform: scale(0.97);}
+.btn--primary{background: var(--pitch); color: var(--chalk); flex:1;}
+.btn--ghost{background:transparent; color: var(--pitch); border:1.5px solid var(--pitch);}
+.btn--accent{background: var(--amber); color: var(--pitch-deep); flex:1;}
+.btn:disabled{opacity:0.4; cursor:not-allowed;}
+
+.apikey-box{
+  margin-top:28px; padding-top:18px; border-top:1px dashed var(--line);
+}
+.apikey-box input{font-family: var(--font-mono); font-size:13px;}
+.hint{font-size:12px; color:#7A8579; margin:8px 0 0;}
+.hint a{color: var(--pitch);}
+
+/* ===== Dossier preview ===== */
+.dossier{
+  background:#fff;
+  width:100%; max-width: 640px;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(13,43,31,0.18);
+  overflow:hidden;
+}
+.dossier__hero{
+  background: linear-gradient(135deg, var(--pitch) 0%, var(--pitch-deep) 100%);
+  color: var(--chalk);
+  padding: 36px 36px 28px;
+}
+.dossier__eyebrow{
+  font-family: var(--font-mono); font-size:11px; letter-spacing:2px;
+  color: var(--amber); margin-bottom:10px;
+}
+.dossier__hero h1{
+  font-family: var(--font-display); font-weight:400; font-size:38px;
+  margin:0; letter-spacing:0.5px;
+}
+.dossier__meta{
+  margin-top:8px; font-size:14px; color:#C9C4B4;
+}
+
+.scoreboard{
+  display:grid; grid-template-columns:repeat(4,1fr);
+  background: var(--ink);
+}
+.score-cell{
+  padding:18px 8px; text-align:center;
+  border-right:1px solid rgba(246,245,239,0.1);
+}
+.score-cell:last-child{border-right:none;}
+.score-num{
+  font-family: var(--font-mono); font-weight:700; font-size:24px;
+  color: var(--amber);
+}
+.score-label{
+  font-size:10px; color:#B9C2BC; text-transform:uppercase; letter-spacing:0.8px;
+  margin-top:4px;
+}
+
+.dossier__section{padding: 26px 36px; border-bottom:1px solid var(--line);}
+.dossier__section h2{
+  font-family: var(--font-display); font-weight:400; font-size:18px;
+  color: var(--pitch); margin:0 0 10px; letter-spacing:0.3px;
+}
+.generated-text{font-size:14.5px; line-height:1.6; color:#333; margin:0;}
+.visibility-list{margin:12px 0 0; padding:0; list-style:none;}
+.visibility-list li{
+  font-size:13.5px; padding:6px 0 6px 22px; position:relative; color:#333;
+}
+.visibility-list li::before{
+  content:"✓"; position:absolute; left:0; color: var(--amber-deep); font-weight:700;
+}
+
+.tiers-preview{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.tier-card{
+  border:1.5px solid var(--line); border-radius:10px; padding:14px 10px; text-align:center;
+}
+.tier-card h4{
+  margin:0 0 6px; font-family: var(--font-display); font-weight:400; font-size:14px;
+  color: var(--amber-deep); text-transform:uppercase;
+}
+.tier-card .amount{
+  font-family: var(--font-mono); font-weight:700; font-size:20px; color: var(--pitch);
+}
+
+.dossier__footer{
+  padding: 18px 36px; background: var(--chalk);
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:13px; color:#4A5750;
+}
+.dossier__footer span:first-child{font-weight:700; color: var(--pitch);}
+
+.preview-actions{
+  margin-top:18px; display:flex; align-items:center; gap:14px;
+}
+.gen-status{font-size:13px; color:#7A8579; font-family: var(--font-mono);}
+
+@media (max-width: 900px){
+  .layout{grid-template-columns:1fr;}
+  .form-panel{border-right:none; border-bottom:1px solid var(--line);}
+}
+
+@media print{
+  .topbar, .form-panel, .preview-actions{display:none !important;}
+  .layout{display:block;}
+  .preview-panel{background:#fff; padding:0;}
+  .dossier{box-shadow:none; max-width:100%;}
+}
+
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__brand">
+    <span class="topbar__mark">CB</span>
+    <span class="topbar__name">Cluboost <em>— Kit Sponsoring</em></span>
+  </div>
+  <div class="topbar__step" id="stepIndicator">Étape 1 / 4</div>
+</header>
+
+<main class="layout">
+
+  <!-- ===== FORMULAIRE ===== -->
+  <section class="panel form-panel">
+
+    <form id="dossierForm">
+
+      <fieldset class="step" data-step="1">
+        <legend>1 · Le club</legend>
+        <label>Nom du club
+          <input type="text" name="clubName" placeholder="ASC Villeneuve Handball" required>
+        </label>
+        <div class="row">
+          <label>Sport
+            <input type="text" name="sport" placeholder="Handball" required>
+          </label>
+          <label>Ville
+            <input type="text" name="city" placeholder="Villeneuve-sur-Lot" required>
+          </label>
+        </div>
+        <label>Année de création
+          <input type="number" name="founded" placeholder="1987" min="1850" max="2026">
+        </label>
+        <label>Deux ou trois lignes sur le club (ambiance, valeurs, palmarès…)
+          <textarea name="pitch" rows="3" placeholder="Club familial fondé en 1987, formation de jeunes, montée en N3 en 2024…"></textarea>
+        </label>
+      </fieldset>
+
+      <fieldset class="step" data-step="2" hidden>
+        <legend>2 · Audience</legend>
+        <div class="row">
+          <label>Licenciés
+            <input type="number" name="members" placeholder="240" min="0">
+          </label>
+          <label>Spectateurs / match
+            <input type="number" name="spectators" placeholder="150" min="0">
+          </label>
+        </div>
+        <label>Tranche d'âge principale
+          <input type="text" name="ageRange" placeholder="6-18 ans, familles">
+        </label>
+        <div class="row">
+          <label>Abonnés Instagram/Facebook
+            <input type="number" name="social" placeholder="1200" min="0">
+          </label>
+          <label>Matchs / événements par an
+            <input type="number" name="events" placeholder="22" min="0">
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset class="step" data-step="3" hidden>
+        <legend>3 · Visibilité offerte</legend>
+        <label class="checkbox"><input type="checkbox" name="visibility" value="Logo sur les maillots"> Logo sur les maillots</label>
+        <label class="checkbox"><input type="checkbox" name="visibility" value="Panneau au stade/gymnase"> Panneau au stade / gymnase</label>
+        <label class="checkbox"><input type="checkbox" name="visibility" value="Mention sur le site internet"> Mention sur le site internet</label>
+        <label class="checkbox"><input type="checkbox" name="visibility" value="Posts réseaux sociaux dédiés"> Posts réseaux sociaux dédiés</label>
+        <label class="checkbox"><input type="checkbox" name="visibility" value="Invitations aux événements du club"> Invitations aux événements du club</label>
+        <label class="checkbox"><input type="checkbox" name="visibility" value="Stand lors des matchs à domicile"> Stand lors des matchs à domicile</label>
+      </fieldset>
+
+      <fieldset class="step" data-step="4" hidden>
+        <legend>4 · Formules tarifaires</legend>
+        <div class="tier-grid">
+          <div class="tier">
+            <h4>Bronze</h4>
+            <label>Montant / an (€)
+              <input type="number" name="tierBronze" placeholder="300" min="0">
+            </label>
+          </div>
+          <div class="tier">
+            <h4>Argent</h4>
+            <label>Montant / an (€)
+              <input type="number" name="tierSilver" placeholder="800" min="0">
+            </label>
+          </div>
+          <div class="tier">
+            <h4>Or</h4>
+            <label>Montant / an (€)
+              <input type="number" name="tierGold" placeholder="1500" min="0">
+            </label>
+          </div>
+        </div>
+        <label>Contact pour vous joindre
+          <input type="text" name="contact" placeholder="president@ascvilleneuve.fr — 06 12 34 56 78">
+        </label>
+      </fieldset>
+
+      <div class="form-nav">
+        <button type="button" id="prevBtn" class="btn btn--ghost">← Précédent</button>
+        <button type="button" id="nextBtn" class="btn btn--primary">Suivant →</button>
+        <button type="button" id="generateBtn" class="btn btn--accent" hidden>✦ Générer le dossier</button>
+      </div>
+    </form>
+
+    <div class="apikey-box">
+      <label>Clé API Anthropic (utilisée uniquement dans votre navigateur, jamais stockée)
+        <input type="password" id="apiKey" placeholder="sk-ant-...">
+      </label>
+      <p class="hint">Nécessaire pour la rédaction IA. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Créer une clé →</a></p>
+    </div>
+  </section>
+
+  <!-- ===== APERÇU DOSSIER ===== -->
+  <section class="panel preview-panel">
+    <div class="dossier" id="dossier">
+
+      <div class="dossier__hero">
+        <div class="dossier__eyebrow">DOSSIER DE SPONSORING</div>
+        <h1 id="prevClubName">Nom du club</h1>
+        <div class="dossier__meta">
+          <span id="prevSport">Sport</span> · <span id="prevCity">Ville</span> · <span id="prevFounded">Fondé en —</span>
+        </div>
+      </div>
+
+      <div class="scoreboard" id="scoreboard">
+        <div class="score-cell">
+          <div class="score-num" id="sNumMembers">—</div>
+          <div class="score-label">Licenciés</div>
+        </div>
+        <div class="score-cell">
+          <div class="score-num" id="sNumSpectators">—</div>
+          <div class="score-label">Spectateurs / match</div>
+        </div>
+        <div class="score-cell">
+          <div class="score-num" id="sNumSocial">—</div>
+          <div class="score-label">Abonnés réseaux</div>
+        </div>
+        <div class="score-cell">
+          <div class="score-num" id="sNumEvents">—</div>
+          <div class="score-label">Événements / an</div>
+        </div>
+      </div>
+
+      <div class="dossier__section">
+        <h2>Le club</h2>
+        <p id="prevPitchGenerated" class="generated-text">Complétez le formulaire, puis cliquez sur « Générer le dossier » pour une présentation rédigée automatiquement.</p>
+      </div>
+
+      <div class="dossier__section">
+        <h2>Pourquoi nous sponsoriser</h2>
+        <p id="prevWhyGenerated" class="generated-text">—</p>
+        <ul id="prevVisibility" class="visibility-list"></ul>
+      </div>
+
+      <div class="dossier__section">
+        <h2>Nos formules</h2>
+        <div class="tiers-preview" id="tiersPreview"></div>
+      </div>
+
+      <div class="dossier__footer">
+        <span>Contactez-nous</span>
+        <span id="prevContact">—</span>
+      </div>
+    </div>
+
+    <div class="preview-actions">
+      <button type="button" id="printBtn" class="btn btn--ghost">🖨 Exporter en PDF</button>
+      <span id="genStatus" class="gen-status"></span>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const form = document.getElementById('dossierForm');
+const steps = Array.from(document.querySelectorAll('.step'));
+let currentStep = 0;
+
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const generateBtn = document.getElementById('generateBtn');
+const stepIndicator = document.getElementById('stepIndicator');
+const genStatus = document.getElementById('genStatus');
+
+function showStep(index){
+  steps.forEach((s, i) => s.hidden = i !== index);
+  prevBtn.disabled = index === 0;
+  nextBtn.hidden = index === steps.length - 1;
+  generateBtn.hidden = index !== steps.length - 1;
+  stepIndicator.textContent = `Étape ${index + 1} / ${steps.length}`;
+}
+
+prevBtn.addEventListener('click', () => {
+  if (currentStep > 0){ currentStep--; showStep(currentStep); }
+});
+nextBtn.addEventListener('click', () => {
+  if (currentStep < steps.length - 1){ currentStep++; showStep(currentStep); }
+});
+
+function getFormData(){
+  const fd = new FormData(form);
+  const visibility = fd.getAll('visibility');
+  return {
+    clubName: fd.get('clubName') || '',
+    sport: fd.get('sport') || '',
+    city: fd.get('city') || '',
+    founded: fd.get('founded') || '',
+    pitch: fd.get('pitch') || '',
+    members: fd.get('members') || '',
+    spectators: fd.get('spectators') || '',
+    ageRange: fd.get('ageRange') || '',
+    social: fd.get('social') || '',
+    events: fd.get('events') || '',
+    visibility,
+    tierBronze: fd.get('tierBronze') || '',
+    tierSilver: fd.get('tierSilver') || '',
+    tierGold: fd.get('tierGold') || '',
+    contact: fd.get('contact') || ''
+  };
+}
+
+function fmt(n){
+  if (!n) return '—';
+  return Number(n).toLocaleString('fr-FR');
+}
+
+function updateLivePreview(){
+  const d = getFormData();
+  document.getElementById('prevClubName').textContent = d.clubName || 'Nom du club';
+  document.getElementById('prevSport').textContent = d.sport || 'Sport';
+  document.getElementById('prevCity').textContent = d.city || 'Ville';
+  document.getElementById('prevFounded').textContent = d.founded ? `Fondé en ${d.founded}` : 'Fondé en —';
+
+  document.getElementById('sNumMembers').textContent = fmt(d.members);
+  document.getElementById('sNumSpectators').textContent = fmt(d.spectators);
+  document.getElementById('sNumSocial').textContent = fmt(d.social);
+  document.getElementById('sNumEvents').textContent = fmt(d.events);
+
+  const visList = document.getElementById('prevVisibility');
+  visList.innerHTML = '';
+  d.visibility.forEach(v => {
+    const li = document.createElement('li');
+    li.textContent = v;
+    visList.appendChild(li);
+  });
+
+  const tiersPreview = document.getElementById('tiersPreview');
+  tiersPreview.innerHTML = '';
+  [['Bronze', d.tierBronze], ['Argent', d.tierSilver], ['Or', d.tierGold]].forEach(([label, amount]) => {
+    const card = document.createElement('div');
+    card.className = 'tier-card';
+    card.innerHTML = `<h4>${label}</h4><div class="amount">${amount ? amount + ' €' : '—'}</div>`;
+    tiersPreview.appendChild(card);
+  });
+
+  document.getElementById('prevContact').textContent = d.contact || '—';
+}
+
+form.addEventListener('input', updateLivePreview);
+updateLivePreview();
+
+// ===== Génération IA =====
+generateBtn.addEventListener('click', async () => {
+  const apiKey = document.getElementById('apiKey').value.trim();
+  if (!apiKey){
+    genStatus.textContent = "⚠ Ajoutez votre clé API pour générer le texte.";
+    return;
+  }
+  const d = getFormData();
+  generateBtn.disabled = true;
+  genStatus.textContent = "Rédaction en cours…";
+
+  const prompt = `Tu rédiges un dossier de sponsoring pour un club sportif amateur. Voici les infos brutes fournies par le club :
+- Nom : ${d.clubName}
+- Sport : ${d.sport}
+- Ville : ${d.city}
+- Fondé en : ${d.founded}
+- Description libre du club : ${d.pitch}
+- Licenciés : ${d.members}
+- Spectateurs par match : ${d.spectators}
+- Tranche d'âge : ${d.ageRange}
+- Abonnés réseaux sociaux : ${d.social}
+- Événements par an : ${d.events}
+- Visibilité offerte : ${d.visibility.join(', ')}
+
+Réponds UNIQUEMENT en JSON valide, sans markdown, avec exactement cette forme :
+{"about": "un paragraphe de 3-4 phrases qui présente le club de façon chaleureuse et professionnelle, prêt à être lu par un sponsor potentiel", "why": "un paragraphe de 2-3 phrases qui explique pourquoi sponsoriser ce club est une bonne opportunité pour une entreprise locale, en s'appuyant sur les chiffres fournis"}`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-5",
+        max_tokens: 600,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    if (!response.ok){
+      const errText = await response.text();
+      throw new Error(`Erreur API (${response.status}) : ${errText.slice(0,200)}`);
+    }
+
+    const data = await response.json();
+    const text = data.content.map(b => b.text || '').join('').trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    document.getElementById('prevPitchGenerated').textContent = parsed.about;
+    document.getElementById('prevWhyGenerated').textContent = parsed.why;
+    genStatus.textContent = "✓ Dossier généré.";
+  } catch (err) {
+    console.error(err);
+    genStatus.textContent = `⚠ ${err.message}`;
+  } finally {
+    generateBtn.disabled = false;
+  }
+});
+
+// ===== Export PDF =====
+document.getElementById('printBtn').addEventListener('click', () => {
+  window.print();
+});
+
+showStep(0);
+
+</script>
+</body>
+</html>
