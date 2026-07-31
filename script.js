@@ -1,6 +1,8 @@
 const SUPABASE_URL = 'https://vsynxuegedicgvhdokun.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_PgoGihfpdU8W7LLPJ2uN1Q_EqlG-k1L';
 
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const form = document.getElementById('dossierForm');
 const steps = Array.from(document.querySelectorAll('.step'));
 let currentStep = 0;
@@ -10,6 +12,7 @@ const nextBtn = document.getElementById('nextBtn');
 const generateBtn = document.getElementById('generateBtn');
 const stepIndicator = document.getElementById('stepIndicator');
 const genStatus = document.getElementById('genStatus');
+const saveStatus = document.getElementById('saveStatus');
 
 function showStep(index){
   steps.forEach((s, i) => s.hidden = i !== index);
@@ -86,15 +89,9 @@ function updateLivePreview(){
 }
 
 form.addEventListener('input', updateLivePreview);
-updateLivePreview();
 
-// ===== Génération IA =====
+// ===== Génération IA (via la fonction serveur /api/generate) =====
 generateBtn.addEventListener('click', async () => {
-  const apiKey = document.getElementById('apiKey').value.trim();
-  if (!apiKey){
-    genStatus.textContent = "⚠ Ajoutez votre clé API pour générer le texte.";
-    return;
-  }
   const d = getFormData();
   generateBtn.disabled = true;
   genStatus.textContent = "Rédaction en cours…";
@@ -116,24 +113,15 @@ Réponds UNIQUEMENT en JSON valide, sans markdown, avec exactement cette forme :
 {"about": "un paragraphe de 3-4 phrases qui présente le club de façon chaleureuse et professionnelle, prêt à être lu par un sponsor potentiel", "why": "un paragraphe de 2-3 phrases qui explique pourquoi sponsoriser ce club est une bonne opportunité pour une entreprise locale, en s'appuyant sur les chiffres fournis"}`;
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("/api/generate", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-5",
-        max_tokens: 600,
-        messages: [{ role: "user", content: prompt }]
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
     });
 
     if (!response.ok){
       const errText = await response.text();
-      throw new Error(`Erreur API (${response.status}) : ${errText.slice(0,200)}`);
+      throw new Error(`Erreur serveur (${response.status}) : ${errText.slice(0,200)}`);
     }
 
     const data = await response.json();
@@ -157,4 +145,86 @@ document.getElementById('printBtn').addEventListener('click', () => {
   window.print();
 });
 
-showStep(0);
+// ===== Sauvegarde Supabase =====
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  const d = getFormData();
+  const generatedAbout = document.getElementById('prevPitchGenerated').textContent;
+  const generatedWhy = document.getElementById('prevWhyGenerated').textContent;
+
+  saveStatus.textContent = "Sauvegarde en cours…";
+
+  const { data, error } = await supabase.from('dossiers').insert([{
+    club_name: d.clubName,
+    sport: d.sport,
+    city: d.city,
+    founded: d.founded || null,
+    pitch: d.pitch,
+    members: d.members ? parseInt(d.members) : null,
+    spectators: d.spectators ? parseInt(d.spectators) : null,
+    age_range: d.ageRange,
+    social: d.social ? parseInt(d.social) : null,
+    events: d.events ? parseInt(d.events) : null,
+    visibility: d.visibility,
+    tier_bronze: d.tierBronze ? parseFloat(d.tierBronze) : null,
+    tier_silver: d.tierSilver ? parseFloat(d.tierSilver) : null,
+    tier_gold: d.tierGold ? parseFloat(d.tierGold) : null,
+    contact: d.contact,
+    generated_about: generatedAbout,
+    generated_why: generatedWhy
+  }]).select().single();
+
+  if (error){
+    console.error(error);
+    saveStatus.textContent = "⚠ Erreur de sauvegarde — vérifiez la configuration Supabase.";
+    return;
+  }
+
+  const shareUrl = `${window.location.origin}${window.location.pathname}?id=${data.id}`;
+  window.history.replaceState({}, '', `?id=${data.id}`);
+  saveStatus.innerHTML = `✓ Sauvegardé. Lien à conserver : <a href="${shareUrl}">${shareUrl}</a>`;
+});
+
+// ===== Chargement d'un dossier existant via ?id=... =====
+async function loadFromUrl(){
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) { updateLivePreview(); showStep(0); return; }
+
+  saveStatus.textContent = "Chargement du dossier…";
+  const { data, error } = await supabase.from('dossiers').select('*').eq('id', id).single();
+
+  if (error || !data){
+    saveStatus.textContent = "⚠ Dossier introuvable.";
+    updateLivePreview();
+    showStep(0);
+    return;
+  }
+
+  form.clubName.value = data.club_name || '';
+  form.sport.value = data.sport || '';
+  form.city.value = data.city || '';
+  form.founded.value = data.founded || '';
+  form.pitch.value = data.pitch || '';
+  form.members.value = data.members || '';
+  form.spectators.value = data.spectators || '';
+  form.ageRange.value = data.age_range || '';
+  form.social.value = data.social || '';
+  form.events.value = data.events || '';
+  form.contact.value = data.contact || '';
+  form.tierBronze.value = data.tier_bronze || '';
+  form.tierSilver.value = data.tier_silver || '';
+  form.tierGold.value = data.tier_gold || '';
+
+  (data.visibility || []).forEach(v => {
+    const cb = Array.from(form.querySelectorAll('input[name="visibility"]')).find(el => el.value === v);
+    if (cb) cb.checked = true;
+  });
+
+  updateLivePreview();
+  document.getElementById('prevPitchGenerated').textContent = data.generated_about || document.getElementById('prevPitchGenerated').textContent;
+  document.getElementById('prevWhyGenerated').textContent = data.generated_why || '—';
+  saveStatus.textContent = "✓ Dossier chargé.";
+  showStep(0);
+}
+
+loadFromUrl();
