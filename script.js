@@ -1,7 +1,6 @@
 const SUPABASE_URL = 'https://vsynxuegedicgvhdokun.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_PgoGihfpdU8W7LLPJ2uN1Q_EqlG-k1L';
 
-
 const form = document.getElementById('dossierForm');
 const steps = Array.from(document.querySelectorAll('.step'));
 let currentStep = 0;
